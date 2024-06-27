@@ -1,4 +1,4 @@
-function X = generate_noise(X, noise_intensity)
+function X = generate_noise_test_image(X, noise_intensity)
     
     [n_1, n_2, n_3] = size(X);
     X = X / 255; 

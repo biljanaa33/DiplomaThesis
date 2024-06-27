@@ -1,4 +1,4 @@
-function [L,E] = TRPCA(X)
+function [L,E] = general_TRPCA(X,L)
 
 
     [n_1, n_2, n_3] = size(X); 
@@ -14,7 +14,7 @@ function [L,E] = TRPCA(X)
     
     while true
         % Update Lk+1 
-        L_next = tensor_SVT(-E_prev+X-Y_prev/mi_k, 1/mi_k);
+        L_next = tensor_SVT_general_transform(-E_prev+X-Y_prev/mi_k, L, 1/mi_k);
         % Update Ek+1
         E_next = soft_thresholding(-L_next+X-Y_prev/mi_k, lambda/mi_k); 
         % Update Lagrangian Multiplier
@@ -28,7 +28,7 @@ function [L,E] = TRPCA(X)
         change_X = max(abs(L_next + E_next - X), [], 'all');
     
         change = max([change_L, change_E, change_X]);
-        %disp(change);
+        disp(change);
         if change_L < e_tol && change_E < e_tol && change_X < e_tol
             break;
         end 
