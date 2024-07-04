@@ -8,18 +8,31 @@ X = double(img);
 
 noise_intensity = 0.3; 
 X = generate_noise_test_image(X, noise_intensity); 
+imwrite(X, 'noisy_image.png');
 
-[L, E] = TRPCA(X); 
+%tensor = rand(3, 3, 3);
+%disp(tensor)
 
-imshow(L)
+%tensor_inv = tensor_inverse(tensor); 
 
-[PSNR, SSIM, RSE] = error_calculation(I, L);
+
+%t = tensor_inverse(tensor_inv); 
+
+%disp(t)
+% slovar
+[A, ~] = TRPCA(X);
+[Z, E] = TLRR(X, A); 
+R = product(A, Z); 
+
+imshow(R)
+imwrite(R, 'reconstructed_tlrr_test.png');
+
+[PSNR, SSIM, RSE] = error_calculation(I, R);
 
 %disp(L);
 
 disp(['PSNR: ', num2str(PSNR)]);
 disp(['SSIM: ', num2str(SSIM)]);
 disp(['RSE: ', num2str(RSE)]);
-
 
 

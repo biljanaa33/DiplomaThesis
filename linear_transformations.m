@@ -20,4 +20,17 @@ disp(A_tensordomain)
 disp("SVD razcep")
 disp(A_svd)
 
+% FFT transfromacija 
+n = 3;
+F = zeros(n, n);
+for j = 0:n-1
+        for k = 0:n-1
+            F(j+1, k+1) = exp(-2 * pi * 1i / n)^(j*k);
+        end
+end
+A_dft = from_tensor_to_transform_domain(A, F); 
+A_fft = fft(A, [], 3); 
 
+disp('fft');
+disp(A_dft);
+disp(A_fft);
