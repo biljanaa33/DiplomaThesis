@@ -20,9 +20,9 @@ imwrite(X, 'noisy_image.png');
 
 %disp(t)
 % slovar
-[A, ~] = TRPCA(X);
-[Z, E] = TLRR(X, A); 
-R = product(A, Z); 
+%[A, ~] = TRPCA(X);
+[Z, E] = TLRR(X, X); 
+R = product(X, Z); 
 
 imshow(R)
 imwrite(R, 'reconstructed_tlrr_test.png');

@@ -54,7 +54,7 @@ function [Z, E] = TLRR(X, A)
         change_XJ = max(abs(X - product(D, J_next)-E_next), [], 'all');
         
         change = max([change_J,change_Z,change_E,change_JE,change_XJ]);
-        disp(change)
+        %disp(change)
        
         if max([change_E, change_J, change_Z]) < tol && max([change_JE, change_XJ]) < tol
             break;

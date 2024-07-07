@@ -4,7 +4,7 @@ addpath('operators');
 
 imagefiles = dir('testne_slike\*.png');      
 nfiles = length(imagefiles); 
-nfiles = 1;
+
 noise_intensity_values = 0.2:0.2:0.6; 
 num_noise_levels = length(noise_intensity_values);
 
@@ -16,8 +16,7 @@ row_ix = 1;
 
 for noise_intensity = noise_intensity_values
     
-    disp('Noise intensity');
-    disp(noise_intensity);
+
     times = zeros(nfiles, 1);
     PSNR_values = zeros(nfiles, 1);
     SSIM_values = zeros(nfiles, 1);
@@ -33,20 +32,20 @@ for noise_intensity = noise_intensity_values
         X = double(img);
         X = generate_noise_test_image(X, noise_intensity);
         
-        X_filename = sprintf('zasumljene_slike/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
+        X_filename = sprintf('zasumljene_slike_lrr/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
         imwrite(X, X_filename); 
 
         tic; 
-        %[L, E] = TRPCA(X);
-        [A, ~] = TRPCA(X);
-        [Z, E] = TLRR(X, A); 
-        R = product(A, Z); 
+        
+        [A, ~]= RPCA_unfold(X);
+        L = LRR_unfold(X, A);
+
         time = toc; 
 
-        L_filename = sprintf('rezultate_tlrr/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
-        imwrite(R, L_filename);
+        L_filename = sprintf('rezultati_lrr/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
+        imwrite(L, L_filename);
         
-        [PSNR, SSIM, RSE] = error_calculation(I, R); 
+        [PSNR, SSIM, RSE] = error_calculation(I, L); 
 
         times(ix) = time;
         PSNR_values(ix) = PSNR;
@@ -65,10 +64,48 @@ for noise_intensity = noise_intensity_values
     current_results = table((1:nfiles)', noise_intensity * ones(nfiles, 1), times, PSNR_values, SSIM_values, RSE_values, ...
         'VariableNames', {'ImageIndex', 'NoiseIntensity', 'Time', 'PSNR', 'SSIM', 'RSE'});
     
-    output_filename = sprintf('rezultati_tlrr_%.0f.xlsx', noise_intensity * 100);
+    output_filename = sprintf('rezultati_lrr%.0f.xlsx', noise_intensity * 100);
     writetable(current_results, output_filename);
 end
 
-writetable(all_results, 'rezultati_tlrr.xlsx');
+writetable(all_results, 'rezultati_lrr.xlsx');
+
+
+function [L, S] = RPCA_unfold(X)
+
+    [~, ~, n3] = size(X);
+    L = zeros(size(X));
+    S = zeros(size(X));
+    
+    for i = 1:n3 
+        Xi = X(:,:,i);
+        
+        [Li, Si] = RPCA(Xi);
+      
+        L(:,:,i) = Li;
+        S(:,:,i) = Si;
+        
+    end
+end
+
+function L = LRR_unfold(X, A)
+
+    [~, ~, n3] = size(X);
+    L = zeros(size(X));
+    
+    for i = 1:n3 
+        Xi = X(:,:,i);
+        Ai = A(:,:,i); 
+        
+        [Zi, ~] = LRR(Xi, Ai);
+
+        Li = Ai * Zi; 
+        L(:,:,i) = Li;
+        
+    end
+end
+
+
+
 
 

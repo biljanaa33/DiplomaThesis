@@ -26,7 +26,7 @@ function [L,S] = RPCA(X)
       change_X = max(abs(L_next + S_next - X));
     
        change = max([change_L, change_S, change_X]);
-       disp(change)
+       % disp(change)
         
        if change < thresh
             break;
