@@ -18,8 +18,8 @@ function [L,E] = TRPCA(X, lambda_val)
     % Inicijalizacija lagrangeovega multiplikatorja
     Y_prev = zeros(n_1, n_2, n_3); 
     
-    %lambda = 1/sqrt(max(n_1,n_2)*n_3);
-    lambda = lambda_val;
+    lambda = 1/sqrt(max(n_1,n_2)*n_3);
+    %lambda = lambda_val;
 
     iter = 0; 
     

@@ -41,7 +41,7 @@ function [L,E] = RPCA(X)
       % oziroma ali ni velikih sprememb pri vseh aproksimacijah      
       change_L = max(abs(L_next - L_prev)); 
       change_E = max(abs(E_next - E_prev)); 
-      change_X = max(abs(L_next + S_next - X));
+      change_X = max(abs(L_next + E_next - X));
     
        change = max([change_L, change_E, change_X]);
        % disp(change)

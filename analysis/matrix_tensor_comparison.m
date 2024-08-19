@@ -1,8 +1,9 @@
 % Primerjava rekonstrukcije med matrčnimi in tenzorskimi pristopi
 % Analiza dveh tipov šuma: Gaussov šum in Bernoullijev šum
 
-data_rpca = readtable('../rezultati_rpca/rezultati_rpca.xlsx');
-data_lrr = readtable('../rezultati_lrr/rezultati_lrr.xlsx');
+data_rpca = readtable('../rezultati/rezultati_rpca_fixed_lambda_fourier_transform/rezultati_rpca.xlsx');
+data_lrr = readtable('../rezultati/rezultati_lrr_fixed_lambda_fourier_transform/rezultati_lrr.xlsx');
+
 
 noise_int = 0.2; 
 time_rpca = data_rpca.Time; 
@@ -16,8 +17,9 @@ time_lrr = time_lrr(noise_int == noise_lrr);
 ix_rpca = 1:length(time_rpca);
 ix_lrr = 1:length(time_lrr);
 
-data_trpca = readtable('../rezultati_trpca/rezultati.xlsx');
-data_tlrr = readtable('../rezultati_tlrr/rezultati_tlrr.xlsx');
+
+data_trpca = readtable('../rezultati/rezultati_trpca_fixed_lambda_fourier_transform/rezultati.xlsx');
+data_tlrr = readtable('../rezultati/rezultati_tlrr_fixed_lambda_fourier_transform/rezultati_tlrr.xlsx');
 
 time_trpca = data_trpca.Time; 
 time_tlrr = data_tlrr.Time; 
@@ -458,50 +460,69 @@ fprintf('-----------------------------------------------------------------------
 fprintf('-----------------------------BERNOULIJEV ŠUM-------------------------------\n');
 
 
-data_rpca = readtable('../rezultati_bernoulijevsum_rpca/rezultati_rpca_b.xlsx');
-data_lrr = readtable('../rezultati_bernoulijevsum_lrr/rezultati_lrr_b.xlsx');
-data_trpca = readtable('../rezultati_bernoulijevsum_trpca/rezultati_trpca_b.xlsx');
-data_tlrr = readtable('../rezultati_bernoulijevsum_tlrr/rezultati_tlrr_b.xlsx');
+data_rpca = readtable('../rezultati/rezultati_rpca_bernoulijevsum/rezultati_rpca_b.xlsx');
+data_lrr = readtable('../rezultati/rezultati_lrr_bernoulijevsum/rezultati_lrr_b.xlsx');
+data_trpca = readtable('../rezultati/rezultati_trpca_bernoulijevsum/rezultati_trpca_b.xlsx');
+data_tlrr = readtable('../rezultati/rezultati_tlrr_bernoulijevsum/rezultati_tlrr_b.xlsx');
 
 time_rpca_b = mean(data_rpca.Time); 
+time_rpca_b_std = std(data_rpca.Time); 
 time_lrr_b = mean(data_lrr.Time); 
+time_lrr_b_std = std(data_lrr.Time); 
 time_trpca_b = mean(data_trpca.Time); 
+time_trpca_b_std = std(data_trpca.Time); 
 time_tlrr_b = mean(data_tlrr.Time); 
+time_tlrr_b_std = std(data_tlrr.Time); 
+
 
 psnr_rpca_b = mean(data_rpca.PSNR); 
+psnr_rpca_b_std = std(data_rpca.PSNR); 
 psnr_lrr_b = mean(data_lrr.PSNR); 
+psnr_lrr_b_std = std(data_lrr.PSNR); 
 psnr_trpca_b = mean(data_trpca.PSNR); 
+psnr_trpca_b_std = std(data_trpca.PSNR); 
 psnr_tlrr_b = mean(data_tlrr.PSNR);
+psnr_tlrr_b_std = std(data_tlrr.PSNR);
 
 rse_rpca_b = mean(data_rpca.RSE); 
+rse_rpca_b_std = std(data_rpca.RSE); 
 rse_lrr_b = mean(data_lrr.RSE); 
+rse_lrr_b_std = std(data_lrr.RSE); 
 rse_trpca_b = mean(data_trpca.RSE); 
+rse_trpca_b_std = std(data_trpca.RSE); 
 rse_tlrr_b = mean(data_tlrr.RSE);
+rse_tlrr_b_std = std(data_tlrr.RSE);
 
-ssim_rpca_b = mean(data_rpca.SSIM); 
-ssim_lrr_b = mean(data_lrr.SSIM); 
-ssim_trpca_b = mean(data_trpca.SSIM); 
-ssim_tlrr_b = mean(data_tlrr.SSIM);
 
 fprintf('Povprečna vrednost PSNR RTPCA za 20%% šumnih podatkov : %.2f\n',psnr_trpca_b);
+fprintf('Standardni odklon PSNR RTPCA za 20%% šumnih podatkov : %.2f\n',psnr_trpca_b_std);
 fprintf('Povprečna vrednost PSNR TLRR za 20%% šumnih podatkov : %.2f\n',psnr_tlrr_b);
+fprintf('Standardni odklon PSNR TLRR za 20%% šumnih podatkov : %.2f\n',psnr_tlrr_b_std);
 fprintf('Povprečna vrednost PSNR RPCA za 20%% šumnih podatkov : %.2f\n',psnr_rpca_b);
+fprintf('Standardni odklon PSNR RPCA za 20%% šumnih podatkov : %.2f\n',psnr_rpca_b_std);
 fprintf('Povprečna vrednost PSNR LRR za 20%% šumnih podatkov : %.2f\n',psnr_lrr_b);
+fprintf('Standardni odklon PSNR LRR za 20%% šumnih podatkov : %.2f\n',psnr_lrr_b_std);
 
 fprintf('Povprečna vrednost RSE RTPCA za 20%% šumnih podatkov : %.2f\n',rse_trpca_b);
+fprintf('Standardni odklon RSE RTPCA za 20%% šumnih podatkov : %.2f\n',rse_trpca_b_std);
 fprintf('Povprečna vrednost RSE TLRR za 20%% šumnih podatkov : %.2f\n',rse_tlrr_b);
+fprintf('Standardni odklon RSE TLRR za 20%% šumnih podatkov : %.2f\n',rse_tlrr_b_std);
 fprintf('Povprečna vrednost RSE RPCA za 20%% šumnih podatkov : %.2f\n',rse_rpca_b);
+fprintf('Standardni odklon RSE RPCA za 20%% šumnih podatkov : %.2f\n',rse_rpca_b_std);
 fprintf('Povprečna vrednost RSE LRR za 20%% šumnih podatkov : %.2f\n',rse_lrr_b);
+fprintf('Standardni odklon RSE LRR za 20%% šumnih podatkov : %.2f\n',rse_lrr_b_std);
 
 fprintf('Povprečna vrednost časa TRPCA za 20%% šumnih podatkov : %.2f\n',time_trpca_b);
+fprintf('Standardni odklon časa TRPCA za 20%% šumnih podatkov : %.2f\n',time_trpca_b_std);
 fprintf('Povprečna vrednost časa TLRR za 20%% šumnih podatkov : %.2f\n',time_tlrr_b);
+fprintf('Standardni odklon časa TLRR za 20%% šumnih podatkov : %.2f\n',time_tlrr_b_std);
 fprintf('Povprečna vrednost časa RPCA za 20%% šumnih podatkov : %.2f\n',time_rpca_b);
+fprintf('Standardni odklon časa RPCA za 20%% šumnih podatkov : %.2f\n',time_rpca_b_std);
 fprintf('Povprečna vrednost časa LRR za 20%% šumnih podatkov : %.2f\n',time_lrr_b);
+fprintf('Standardni odklon časa LRR za 20%% šumnih podatkov : %.2f\n',time_lrr_b_std);
 
-fprintf('Povprečna vrednost SSIM RTPCA za 20%% šumnih podatkov : %.2f\n',ssim_trpca_b);
-fprintf('Povprečna vrednost SSIM TLRR za 20%% šumnih podatkov : %.2f\n',ssim_tlrr_b);
-fprintf('Povprečna vrednost SSIM RPCA za 20%% šumnih podatkov : %.2f\n',ssim_rpca_b);
-fprintf('Povprečna vrednost SSIM LRR za 20%% šumnih podatkov : %.2f\n',ssim_lrr_b);
+
+
 
 
 

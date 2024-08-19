@@ -5,7 +5,7 @@ addpath('operators');
 imagefiles = dir('testne_slike\*.png');      
 nfiles = length(imagefiles); 
 
-noise_intensity_values = 0.2:0.2:0.6; 
+noise_intensity_values = 0.2:0.2:0.2; 
 num_noise_levels = length(noise_intensity_values);
 
 all_results = table('Size', [nfiles * num_noise_levels, 6], ...
@@ -30,19 +30,21 @@ for noise_intensity = noise_intensity_values
         I = double(img) / 255;
 
         X = double(img);
-        X = generate_noise_test_image(X, noise_intensity);
+        X = generate_noise_test_image_sameix(X, noise_intensity);
+        %X = generate_noise_test_image(X, noise_intensity);
         
-        X_filename = sprintf('zasumljene_slike_lrr/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
-        imwrite(X, X_filename); 
+        %X_filename = sprintf('zasumljene_slike_lrr/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
+        %imwrite(X, X_filename); 
 
         tic; 
-        
-        [A, ~]= RPCA_unfold(X);
-        L = LRR_unfold(X, A);
+        [A, ~]= TRPCA(X, 10);
+        [Z,~] = TLRR(X, A);
+        L = product(A, Z);
+
 
         time = toc; 
 
-        L_filename = sprintf('rezultati_lrr/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
+        L_filename = sprintf('rezultati_tlrr_bernoulijevsum/slika_%d_sum_%.0f.png', ix, noise_intensity * 100);
         imwrite(L, L_filename);
         
         [PSNR, SSIM, RSE] = error_calculation(I, L); 
@@ -64,11 +66,11 @@ for noise_intensity = noise_intensity_values
     current_results = table((1:nfiles)', noise_intensity * ones(nfiles, 1), times, PSNR_values, SSIM_values, RSE_values, ...
         'VariableNames', {'ImageIndex', 'NoiseIntensity', 'Time', 'PSNR', 'SSIM', 'RSE'});
     
-    output_filename = sprintf('rezultati_lrr%.0f.xlsx', noise_intensity * 100);
+    output_filename = sprintf('rezultati_tlrr%.0f.xlsx', noise_intensity * 100);
     writetable(current_results, output_filename);
 end
 
-writetable(all_results, 'rezultati_lrr.xlsx');
+writetable(all_results, 'rezultati_tlrr_b.xlsx');
 
 
 function [L, S] = RPCA_unfold(X)

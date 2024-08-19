@@ -1,7 +1,7 @@
 % Analiza časa konvergence z različnimi vrednostmi parametra 
 % rho in uspešnosti rekonstrukcije
-data_rpca = readtable('../rezultati_stepsizelarger_rpca/rezultati_stepsize_larger_rpca.xlsx');
-data_lrr = readtable('../rezultati_stepsizelarger_lrr/rezultati_stepsize_larger_lrr.xlsx');
+data_rpca = readtable('../rezultati/rezultati_rpca_fixed_lambda_fourier_transform/rezultati_rpca.xlsx');
+data_lrr = readtable('../rezultati/rezultati_lrr_fixed_lambda_fourier_transform/rezultati_lrr.xlsx');
 
 noise_int = 0.2; 
 time_rpca = data_rpca.Time; 
@@ -15,8 +15,8 @@ time_lrr = time_lrr(noise_int == noise_lrr);
 ix_rpca = 1:length(time_rpca);
 ix_lrr = 1:length(time_lrr);
 
-data_trpca = readtable('../rezultati_stepsizelarger_trpca/rezultati_stepsize_larger_trpca.xlsx');
-data_tlrr = readtable('../rezultati_stepsizelarger_tlrr/rezultati_stepsize_larger_tlrr.xlsx');
+data_trpca = readtable('../rezultati/rezultati_trpca_fixed_lambda_fourier_transform/rezultati.xlsx');
+data_tlrr = readtable('../rezultati/rezultati_tlrr_fixed_lambda_fourier_transform/rezultati_tlrr.xlsx');
 
 time_trpca = data_trpca.Time; 
 time_tlrr = data_tlrr.Time; 
@@ -42,7 +42,7 @@ ylabel('Čas');
 legend('show');
 grid on;
 
-saveas(gcf, 'primerjava_časa_20_rho_15.png');
+%saveas(gcf, 'primerjava_časa_20_rho_15.png');
 
 psnr_rpca = data_rpca.PSNR; 
 psnr_lrr = data_lrr.PSNR; 
@@ -121,40 +121,68 @@ saveas(gcf, 'primerjava_rse_20_rho_15.png');
 
 % Povprečna napaka PSNR
 psnr_rpca_mean = mean(psnr_rpca); 
+psnr_rpca_std = std(psnr_rpca); 
 psnr_lrr_mean = mean(psnr_lrr);
+psnr_lrr_std = std(psnr_lrr);
 psnr_trpca_mean = mean(psnr_trpca);
+psnr_trpca_std = std(psnr_trpca);
 psnr_tlrr_mean = mean(psnr_tlrr);
+psnr_tlrr_std = std(psnr_tlrr);
+
 
 % Povprečna napaka RSE 
 rse_rpca_mean = mean(rse_rpca); 
+rse_rpca_std = std(rse_rpca); 
 rse_lrr_mean = mean(rse_lrr);
+rse_lrr_std = std(rse_lrr);
 rse_trpca_mean = mean(rse_trpca);
+rse_trpca_std = std(rse_trpca);
 rse_tlrr_mean = mean(rse_tlrr);
+rse_tlrr_std = std(rse_tlrr);
 
 % Povprečen čas
 time_rpca_mean = mean(time_rpca); 
+time_rpca_std = std(time_rpca); 
 time_lrr_mean = mean(time_lrr);
+time_lrr_std = std(time_lrr);
 time_trpca_mean = mean(time_trpca);
+time_trpca_std = std(time_trpca);
 time_tlrr_mean = mean(time_tlrr);
+time_tlrr_std = std(time_tlrr);
+
 
 fprintf('---------------------------------------------------------------------------\n');
 fprintf('-----------------------------GAUSOV ŠUM------------------------------------\n');
 
 
 fprintf('Povprečna vrednost PSNR RTPCA za 20%% šumnih podatkov : %.2f\n',psnr_trpca_mean);
+fprintf('Standardni odklon PSNR RTPCA za 20%% šumnih podatkov : %.2f\n',psnr_trpca_std);
 fprintf('Povprečna vrednost PSNR TLRR za 20%% šumnih podatkov : %.2f\n',psnr_tlrr_mean);
+fprintf('Standardni odklon PSNR TLRR za 20%% šumnih podatkov : %.2f\n',psnr_tlrr_std);
 fprintf('Povprečna vrednost PSNR RPCA za 20%% šumnih podatkov : %.2f\n',psnr_rpca_mean);
+fprintf('Standardni odklon PSNR RPCA za 20%% šumnih podatkov : %.2f\n',psnr_rpca_std);
 fprintf('Povprečna vrednost PSNR LRR za 20%% šumnih podatkov : %.2f\n',psnr_lrr_mean);
+fprintf('Standardni odklon PSNR LRR za 20%% šumnih podatkov : %.2f\n',psnr_lrr_std);
 
 fprintf('Povprečna vrednost RSE RTPCA za 20%% šumnih podatkov : %.2f\n',rse_trpca_mean);
+fprintf('Standardni odklon RSE RTPCA za 20%% šumnih podatkov : %.2f\n',rse_trpca_std);
 fprintf('Povprečna vrednost RSE TLRR za 20%% šumnih podatkov : %.2f\n',rse_tlrr_mean);
+fprintf('Standardni odklon RSE TLRR za 20%% šumnih podatkov : %.2f\n',rse_tlrr_std);
 fprintf('Povprečna vrednost RSE RPCA za 20%% šumnih podatkov : %.2f\n',rse_rpca_mean);
+fprintf('Standardni odklon RSE RPCA za 20%% šumnih podatkov : %.2f\n',rse_rpca_std);
 fprintf('Povprečna vrednost RSE LRR za 20%% šumnih podatkov : %.2f\n',rse_lrr_mean);
+fprintf('Standardni odklon RSE LRR za 20%% šumnih podatkov : %.2f\n',rse_lrr_std);
+
 
 fprintf('Povprečna vrednost časa TRPCA za 20%% šumnih podatkov : %.2f\n',time_trpca_mean);
+fprintf('Standardni odklon časa TRPCA za 20%% šumnih podatkov : %.2f\n',time_trpca_std);
 fprintf('Povprečna vrednost časa TLRR za 20%% šumnih podatkov : %.2f\n',time_tlrr_mean);
+fprintf('Standardni odklon časa TLRR za 20%% šumnih podatkov : %.2f\n',time_tlrr_std);
 fprintf('Povprečna vrednost časa RPCA za 20%% šumnih podatkov : %.2f\n',time_rpca_mean);
+fprintf('Standardni odklon časa RPCA za 20%% šumnih podatkov : %.2f\n',time_rpca_std);
 fprintf('Povprečna vrednost časa LRR za 20%% šumnih podatkov : %.2f\n',time_lrr_mean);
+fprintf('Standardni odklon časa LRR za 20%% šumnih podatkov : %.2f\n',time_lrr_std);
+
 
 fprintf('---------------------------------------------------------------------------\n');
 
@@ -271,38 +299,64 @@ grid on;
 
 saveas(gcf, 'primerjava_rse_40_rho_15.png');
 
-% povprecna napaka psnr
+% Povprečna napaka PSNR
 psnr_rpca_mean = mean(psnr_rpca); 
+psnr_rpca_std = std(psnr_rpca); 
 psnr_lrr_mean = mean(psnr_lrr);
+psnr_lrr_std = std(psnr_lrr);
 psnr_trpca_mean = mean(psnr_trpca);
+psnr_trpca_std = std(psnr_trpca);
 psnr_tlrr_mean = mean(psnr_tlrr);
+psnr_tlrr_std = std(psnr_tlrr);
 
-% povprecna napaka rse 
+
+% Povprečna napaka RSE 
 rse_rpca_mean = mean(rse_rpca); 
+rse_rpca_std = std(rse_rpca); 
 rse_lrr_mean = mean(rse_lrr);
+rse_lrr_std = std(rse_lrr);
 rse_trpca_mean = mean(rse_trpca);
+rse_trpca_std = std(rse_trpca);
 rse_tlrr_mean = mean(rse_tlrr);
+rse_tlrr_std = std(rse_tlrr);
 
-% povprecen cas
+% Povprečen čas
 time_rpca_mean = mean(time_rpca); 
+time_rpca_std = std(time_rpca); 
 time_lrr_mean = mean(time_lrr);
+time_lrr_std = std(time_lrr);
 time_trpca_mean = mean(time_trpca);
+time_trpca_std = std(time_trpca);
 time_tlrr_mean = mean(time_tlrr);
+time_tlrr_std = std(time_tlrr);
 
 fprintf('Povprečna vrednost PSNR RTPCA za 40%% šumnih podatkov : %.2f\n',psnr_trpca_mean);
+fprintf('Standardni odklon PSNR RTPCA za 40%% šumnih podatkov : %.2f\n',psnr_trpca_std);
 fprintf('Povprečna vrednost PSNR TLRR za 40%% šumnih podatkov : %.2f\n',psnr_tlrr_mean);
+fprintf('Standardni odklon PSNR TLRR za 40%% šumnih podatkov : %.2f\n',psnr_tlrr_std);
 fprintf('Povprečna vrednost PSNR RPCA za 40%% šumnih podatkov : %.2f\n',psnr_rpca_mean);
+fprintf('Standardni odklon PSNR RPCA za 40%% šumnih podatkov : %.2f\n',psnr_rpca_std);
 fprintf('Povprečna vrednost PSNR LRR za 40%% šumnih podatkov : %.2f\n',psnr_lrr_mean);
+fprintf('Standardni odklon PSNR LRR za 40%% šumnih podatkov : %.2f\n',psnr_lrr_std);
 
 fprintf('Povprečna vrednost RSE RTPCA za 40%% šumnih podatkov : %.2f\n',rse_trpca_mean);
+fprintf('Standardni odklon RSE RTPCA za 40%% šumnih podatkov : %.2f\n',rse_trpca_std);
 fprintf('Povprečna vrednost RSE TLRR za 40%% šumnih podatkov : %.2f\n',rse_tlrr_mean);
+fprintf('Standardni odklon RSE TLRR za 40%% šumnih podatkov : %.2f\n',rse_tlrr_std);
 fprintf('Povprečna vrednost RSE RPCA za 40%% šumnih podatkov : %.2f\n',rse_rpca_mean);
+fprintf('Standardni odklon RSE RPCA za 40%% šumnih podatkov : %.2f\n',rse_rpca_std);
 fprintf('Povprečna vrednost RSE LRR za 40%% šumnih podatkov : %.2f\n',rse_lrr_mean);
+fprintf('Standardni odklon RSE LRR za 40%% šumnih podatkov : %.2f\n',rse_lrr_std);
+
 
 fprintf('Povprečna vrednost časa TRPCA za 40%% šumnih podatkov : %.2f\n',time_trpca_mean);
+fprintf('Standardni odklon časa TRPCA za 40%% šumnih podatkov : %.2f\n',time_trpca_std);
 fprintf('Povprečna vrednost časa TLRR za 40%% šumnih podatkov : %.2f\n',time_tlrr_mean);
+fprintf('Standardni odklon časa TLRR za 40%% šumnih podatkov : %.2f\n',time_tlrr_std);
 fprintf('Povprečna vrednost časa RPCA za 40%% šumnih podatkov : %.2f\n',time_rpca_mean);
+fprintf('Standardni odklon časa RPCA za 40%% šumnih podatkov : %.2f\n',time_rpca_std);
 fprintf('Povprečna vrednost časa LRR za 40%% šumnih podatkov : %.2f\n',time_lrr_mean);
+fprintf('Standardni odklon časa LRR za 40%% šumnih podatkov : %.2f\n',time_lrr_std);
 
 
 fprintf('---------------------------------------------------------------------------\n');
@@ -420,37 +474,66 @@ grid on;
 
 saveas(gcf, 'primerjava_rse_60_rho_15.png');
 
+% Povprečna napaka PSNR
 psnr_rpca_mean = mean(psnr_rpca); 
+psnr_rpca_std = std(psnr_rpca); 
 psnr_lrr_mean = mean(psnr_lrr);
+psnr_lrr_std = std(psnr_lrr);
 psnr_trpca_mean = mean(psnr_trpca);
+psnr_trpca_std = std(psnr_trpca);
 psnr_tlrr_mean = mean(psnr_tlrr);
+psnr_tlrr_std = std(psnr_tlrr);
 
+
+% Povprečna napaka RSE 
 rse_rpca_mean = mean(rse_rpca); 
+rse_rpca_std = std(rse_rpca); 
 rse_lrr_mean = mean(rse_lrr);
+rse_lrr_std = std(rse_lrr);
 rse_trpca_mean = mean(rse_trpca);
+rse_trpca_std = std(rse_trpca);
 rse_tlrr_mean = mean(rse_tlrr);
+rse_tlrr_std = std(rse_tlrr);
 
+% Povprečen čas
 time_rpca_mean = mean(time_rpca); 
+time_rpca_std = std(time_rpca); 
 time_lrr_mean = mean(time_lrr);
+time_lrr_std = std(time_lrr);
 time_trpca_mean = mean(time_trpca);
+time_trpca_std = std(time_trpca);
 time_tlrr_mean = mean(time_tlrr);
+time_tlrr_std = std(time_tlrr);
 fprintf('---------------------------------------------------------------------------\n');
 
 
 fprintf('Povprečna vrednost PSNR RTPCA za 60%% šumnih podatkov : %.2f\n',psnr_trpca_mean);
+fprintf('Standardni odklon PSNR RTPCA za 60%% šumnih podatkov : %.2f\n',psnr_trpca_std);
 fprintf('Povprečna vrednost PSNR TLRR za 60%% šumnih podatkov : %.2f\n',psnr_tlrr_mean);
+fprintf('Standardni odklon PSNR TLRR za 60%% šumnih podatkov : %.2f\n',psnr_tlrr_std);
 fprintf('Povprečna vrednost PSNR RPCA za 60%% šumnih podatkov : %.2f\n',psnr_rpca_mean);
+fprintf('Standardni odklon PSNR RPCA za 60%% šumnih podatkov : %.2f\n',psnr_rpca_std);
 fprintf('Povprečna vrednost PSNR LRR za 60%% šumnih podatkov : %.2f\n',psnr_lrr_mean);
+fprintf('Standardni odklon PSNR LRR za 60%% šumnih podatkov : %.2f\n',psnr_lrr_std);
 
 fprintf('Povprečna vrednost RSE RTPCA za 60%% šumnih podatkov : %.2f\n',rse_trpca_mean);
+fprintf('Standardni odklon RSE RTPCA za 60%% šumnih podatkov : %.2f\n',rse_trpca_std);
 fprintf('Povprečna vrednost RSE TLRR za 60%% šumnih podatkov : %.2f\n',rse_tlrr_mean);
+fprintf('Standardni odklon RSE TLRR za 60%% šumnih podatkov : %.2f\n',rse_tlrr_std);
 fprintf('Povprečna vrednost RSE RPCA za 60%% šumnih podatkov : %.2f\n',rse_rpca_mean);
+fprintf('Standardni odklon RSE RPCA za 60%% šumnih podatkov : %.2f\n',rse_rpca_std);
 fprintf('Povprečna vrednost RSE LRR za 60%% šumnih podatkov : %.2f\n',rse_lrr_mean);
+fprintf('Standardni odklon RSE LRR za 60%% šumnih podatkov : %.2f\n',rse_lrr_std);
+
 
 fprintf('Povprečna vrednost časa TRPCA za 60%% šumnih podatkov : %.2f\n',time_trpca_mean);
+fprintf('Standardni odklon časa TRPCA za 60%% šumnih podatkov : %.2f\n',time_trpca_std);
 fprintf('Povprečna vrednost časa TLRR za 60%% šumnih podatkov : %.2f\n',time_tlrr_mean);
+fprintf('Standardni odklon časa TLRR za 60%% šumnih podatkov : %.2f\n',time_tlrr_std);
 fprintf('Povprečna vrednost časa RPCA za 60%% šumnih podatkov : %.2f\n',time_rpca_mean);
+fprintf('Standardni odklon časa RPCA za 60%% šumnih podatkov : %.2f\n',time_rpca_std);
 fprintf('Povprečna vrednost časa LRR za 60%% šumnih podatkov : %.2f\n',time_lrr_mean);
+fprintf('Standardni odklon časa LRR za 60%% šumnih podatkov : %.2f\n',time_lrr_std);
 
 
 
