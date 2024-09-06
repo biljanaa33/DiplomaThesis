@@ -1,1 +1,1 @@
-# diplomskiseminar
+#  Analiza glavnih komponent večdimenzionalnih podatkov
