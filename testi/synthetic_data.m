@@ -1,80 +1,123 @@
 addpath('algorithms');
 addpath('operators');
 
-n_1 = 50;
-n_2 = 50;
-n_3 = 3;
+% Parameters
+n1 = 481;
+n2 = 321;
+n3 = 3;
+mi = 500;
+r_values = 1:60;
+noise_levels = 0.025:0.025:0.65;
+num_instances = 5;
+time_limit = 300; 
 
-ranks = 1:50; 
-noise = 0.025:0.025:0.7;
-num_samples = 5;
+% Initialize error matrix and time log
+error_matrix = zeros(length(r_values), length(noise_levels));
+execution_times = cell(length(r_values) * length(noise_levels) * num_instances, 5);
+execution_times_1 = cell(length(r_values) * length(noise_levels) * num_instances, 5);
 
-L = generate_tensor(n_1, n_2, n_3, 10);
-E = generate_gaussian_noise(L, 0.4); 
-X = TRPCA(L+E); 
+exec_count = 0;
 
-
-error_matrix = zeros(length(ranks), length(noise));
-
-for r_idx = 1:length(ranks)
-
-    r = ranks(r_idx);
-
-    for p_idx = 1:length(noise)
-        
-        sample_errors = zeros(1, num_samples);
-        p = noise(p_idx);
-
-        for sample = 1:num_samples
-
-            L = generate_tensor(n_1, n_2, n_3, r);
-            E = generate_sparse_noise(L, p);
+for r_idx = 1:3
+    r = r_values(r_idx);
     
-            X = L + E; 
-            L_r = TRPCA(X); 
-            error = reconstruction_error(L, L_r); 
-            sample_errors(sample) = error;
+    for p_idx = 1:length(noise_levels)
+        p = noise_levels(p_idx);
+
+        sample_errors = zeros(1, num_instances);
+        sample_time = zeros(1, num_instances);
+
+        for t = 1:num_instances
+
+            L_list = cell(1, 1);
+            for i = 1:1
+                Bi = randn(n1, r, n3);
+                Ci = randn(r, n2, n3);
+                Li = product(Bi, Ci);
+                L_list{i} = Li;
+            end
+            
+            L0 = cat(2, L_list{:});
+            n2 = size(L0, 2);
+
+            L0_n = L0 / max(abs(L0(:)));
+            E0 = generate_gaussian_noise(L0_n, p);
+            X = L0_n + E0;
+
+            tic;
+            [L_r, ~] = TRPCA(X);
+            time = toc;
+            tic;
+            [Z, ~] = TLRR(X, L_r); 
+            L_rr = product(L_r, Z); 
+            time_1 = toc; 
+            time_1 = time_1 + time; 
+
+            error = norm(L_r(:) - L0_n(:)) / norm(L0_n(:));
+            sample_errors(t) = error;
+
+            error_1 = norm(L_rr(:) - L0_n(:)) / norm(L0_n(:));
+
+
+            exec_count = exec_count + 1;
+            execution_times{exec_count, 1} = r;
+            execution_times{exec_count, 2} = p;
+            execution_times{exec_count, 3} = t;
+            execution_times{exec_count, 4} = time;
+            execution_times{exec_count, 5} = error; 
+
+            execution_times_1{exec_count, 1} = r;
+            execution_times_1{exec_count, 2} = p;
+            execution_times_1{exec_count, 3} = t;
+            execution_times_1{exec_count, 4} = time_1;
+            execution_times_1{exec_count, 5} = error_1; 
+
+
+                
+
+            %disp("Error");
+            %disp(error);
+            %disp("Time");
+            %disp(time);
+
+            
 
         end
 
-           mean_error = mean(sample_errors);
-           error_matrix(r_idx, p_idx) = mean_error;
-           fprintf('noise %.2f, rank %d, error %.4f\n', p, r, mean_error);
+        mean_error = mean(sample_errors);
+        error_matrix(r_idx, p_idx) = mean_error;
+        fprintf('noise %.2f, rank %d, error %.4f \n', p, r, mean_error);
 
-
+        
     end
+         execution_times = execution_times(1:exec_count, :); 
+        filename = 'execution_times_gaussian_rtpca_4.xlsx';
+        headers = {'Rank', 'NoiseLevel', 'Instance', 'Time','Error'};
+        writecell([headers; execution_times], filename);
 
+        execution_times_1 = execution_times_1(1:exec_count, :); 
+        filename = 'execution_times_gaussian_tlrr_4.xlsx';
+        headers = {'Rank', 'NoiseLevel', 'Instance', 'Time','Error'};
+        writecell([headers; execution_times_1], filename);
 end
 
+%figure;
+%imagesc(noise_levels, r_values, error_matrix);
+%colorbar;
+%xlabel('Noise Level (\rho)');
+%ylabel('Rank (r)');
+%title('Reconstruction Error Sparse Noise');
+%saveas(gcf, 'reconstruction_error_gaussian_noise_trpca.png');
 
-figure;
-imagesc(noise, ranks, error_matrix);
-colorbar;
-xlabel('Noise Level (p)');
-ylabel('Rank (r)');
-title('Reconstruction Error');
-saveas(gcf, 'reconstruction_error.png');
+%execution_times = execution_times(1:exec_count, :); 
+%filename = 'execution_times_gaussian_rtpca.xlsx';
+%headers = {'Rank', 'NoiseLevel', 'Instance', 'Time','Error'};
+%writecell([headers; execution_times], filename);
 
-function X = generate_tensor(n_1, n_2, n_3, r)
-
-    P = randn(n_1, r, n_3);
-    Q = randn(r, n_2, n_3);
-    X = product(P, Q); 
-
-end
-
-function E = generate_sparse_noise(X, p)
-    
-     [n_1, n_2, n_3] = size(X); 
-     num_elements = n_1 * n_2 * n_3;
-     num_noise_elements = round(p * num_elements);
-     linear_indices = randperm(num_elements, num_noise_elements);
-     E = zeros(n_1, n_2, n_3);
-     noise_values = randi([0, 1], num_noise_elements, 1) * 2 - 1; 
-     
-     E(linear_indices) = noise_values;
-    
-end
+%execution_times_1 = execution_times_1(1:exec_count, :); 
+%filename = 'execution_times_gaussian_tlrr.xlsx';
+%headers = {'Rank', 'NoiseLevel', 'Instance', 'Time','Error'};
+%writecell([headers; execution_times_1], filename);
 
 function E = generate_gaussian_noise(X, p)
     
@@ -84,13 +127,5 @@ function E = generate_gaussian_noise(X, p)
     idx = randperm(num_elements, num_noise);
     E = zeros(n_1, n_2, n_3);
     E(idx) = randn(size(idx));
-
-end
-
-function error = reconstruction_error(L, L_r)
-
-    L = L(:);
-    L_r = L_r(:); 
-    error = norm(L_r-L) / norm(L);
 
 end
